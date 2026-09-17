@@ -45,10 +45,11 @@ ssh -F /dev/null admin@10.0.0.8 \
   'sudo sed -n "s/^[[:space:]]*secret = //p" /opt/freeradius/config/clients.conf'
 ```
 
-Before production use, replace the temporary `10.0.0.0/24` RADIUS client range
-with the exact source IP address or addresses observed from the Aruba cluster.
-The shared secret authenticates Aruba to FreeRADIUS; it is not a Wi-Fi password
-and is never entered by end users.
+The Aruba cluster originates RADIUS requests from three AP addresses:
+`192.168.1.20`, `192.168.1.111`, and `192.168.1.112`. Each is registered as an
+individual RADIUS client with the same shared secret. The secret authenticates
+Aruba to FreeRADIUS; it is not a Wi-Fi password and is never entered by end
+users.
 
 ## Client certificate policy
 
