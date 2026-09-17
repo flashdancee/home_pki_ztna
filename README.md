@@ -2,9 +2,9 @@
 
 A phased, free-software lab for learning certificate management, identity, and service-specific access control on Proxmox.
 
-Start with [PLAN.md](PLAN.md). The first deliverable is one Frigate endpoint with a certificate issued by a private lab CA, trusted by one test client. Later phases add renewal, reverse-proxy integration, SSO/MFA, and ZTNA.
+Read [PKI Architecture and Enterprise Mapping](docs/PKI_ARCHITECTURE.md) for a concise explanation of how the deployment works. [PLAN.md](PLAN.md) contains the phased roadmap, acceptance tests, and future SSO/MFA and ZTNA work.
 
-Status: planning and read-only discovery completed on 2026-09-16. No VM, CA, DNS, proxy, or application configuration has been changed.
+Status: Phase 1 is operational. A dedicated Smallstep CA issues short-lived certificates to NVision, Firefox trusts the private root, and certificate renewal is automated and tested.
 
 New infrastructure belongs on a dedicated VM, not an existing Docker host. Existing Frigate and proxy deployments receive only the configuration needed for their selected pilot phase.
 
