@@ -6,7 +6,7 @@ Updated: 2026-09-16. This is a proposed rollout, not a record of deployed contro
 
 Open one Frigate instance using HTTPS from one trusted test device, without a certificate warning. Use a dedicated Linux VM running Docker for the new CA. Stop at this milestone before adding more platforms.
 
-The owner selected the demo Frigate instance for the pilot. Discovery found that container stopped; inspect its configuration and startup requirements before bringing it online. Keep the existing public hostnames and certificates working during the experiment.
+The owner selected the demo NVision (Frigate fork) instance for the pilot. It is running and healthy. Use its authenticated TLS endpoint on port 8971 for the certificate exercise. Keep the existing public hostnames and certificates working during the experiment.
 
 ## How the pieces relate
 
@@ -49,11 +49,12 @@ References: [step-ca source/license](https://github.com/smallstep/certificates),
 - [x] Prepare initial documentation for GitHub sync on `main`.
 - [x] Select the demo Frigate instance as the pilot target.
 - [x] Select Firefox on the owner's current PC; owner agrees to guided public-root certificate installation.
-- [ ] Inspect the selected Frigate version, Compose/configuration, authentication, TLS and existing integrations.
+- [x] Inspect the selected NVision version, Compose/configuration, authentication and TLS behavior.
+- [ ] Inspect camera, MQTT, storage and other integrations before changing or restarting NVision.
 - [ ] Identify Pi-hole and Nginx Proxy Manager management endpoints and versions.
 - [ ] Allocate a VM ID and IP through the live Proxmox inventory and DHCP/phpIPAM records. Do not infer a free IP from a failed ping.
 
-Discovery: the target Proxmox node is accessible and has approximately 24 GiB available memory and 128 GiB available thin storage. These are a point-in-time observation, not a capacity reservation. Its bridge is `vmbr0`. The demo Frigate container is stopped. Portainer's screenshot marks the GPU Docker endpoint down, but that does not prove the host itself is down; investigate only if it affects the chosen pilot. NPM status badges likewise do not establish backend application health.
+Discovery: the target Proxmox node is accessible and has approximately 24 GiB available memory and 128 GiB available thin storage. These are a point-in-time observation, not a capacity reservation. Its bridge is `vmbr0`. The demo runs NVision with Frigate core version 0.17.0. The container is healthy. Its port 8971 endpoint uses the default self-signed Frigate certificate and rejects an unauthenticated API request; port 5000 accepts the same API request without authentication. Use 8971 for the pilot and later restrict port 5000 to required integration sources. Portainer's screenshot marks the GPU Docker endpoint down, but that does not prove the host itself is down; investigate only if it affects the chosen pilot. NPM status badges likewise do not establish backend application health.
 
 Keep concrete IP allocations, credentials, internal host inventory and raw exports in ignored `local/` material rather than the publishable plan.
 
@@ -77,7 +78,7 @@ Install the public root certificate on one test device after independently check
 
 The selected client is Firefox on the owner's current PC. Follow [FIREFOX_TRUST.md](FIREFOX_TRUST.md) together once the CA certificate and its verified fingerprint are available.
 
-For supported Frigate versions, the documented certificate directory is `/etc/letsencrypt/live/frigate`, with `fullchain.pem` and `privkey.pem`. Mount the certificate directory read-only, supply the leaf plus intermediate chain, and enable TLS on the authenticated endpoint, normally port 8971. Verify the installed release before applying changes. Preserve Frigate authentication; port 5000 is not an equivalent authenticated endpoint. See [Frigate TLS](https://docs.frigate.video/configuration/tls/) and [authentication](https://docs.frigate.video/configuration/authentication/).
+For Frigate 0.17, the documented certificate directory is `/etc/letsencrypt/live/frigate`, with `fullchain.pem` and `privkey.pem`. Confirm that the NVision fork retains this behavior before mounting anything. Mount the certificate directory read-only, supply the leaf plus intermediate chain, and keep TLS enabled on authenticated port 8971. Preserve authentication; port 5000 is an unauthenticated internal endpoint in this deployment and is unsuitable for the browser pilot. See [Frigate TLS](https://docs.frigate.video/configuration/tls/) and [authentication](https://docs.frigate.video/configuration/authentication/).
 
 Check existing HTTP upstreams before enabling TLS: a proxy still forwarding HTTP to a now-HTTPS port will fail. If the pilot requires changing an existing backend listener, update and validate dependent proxy connections in the same change, with a saved rollback configuration.
 
