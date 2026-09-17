@@ -53,7 +53,8 @@ References: [step-ca source/license](https://github.com/smallstep/certificates),
 - [x] Inspect the selected NVision version, Compose/configuration, authentication and TLS behavior.
 - [ ] Inspect camera, MQTT, storage and other integrations before changing or restarting NVision.
 - [ ] Identify Pi-hole and Nginx Proxy Manager management endpoints and versions.
-- [ ] Allocate a VM ID and IP through the live Proxmox inventory and DHCP/phpIPAM records. Do not infer a free IP from a failed ping.
+- [x] Allocate Proxmox VM 112 and reserve its address in phpIPAM.
+- [ ] Permit required outbound package/image access for the new VM and validate time synchronization.
 
 Discovery: the target Proxmox node is accessible and has approximately 24 GiB available memory and 128 GiB available thin storage. These are a point-in-time observation, not a capacity reservation. Its bridge is `vmbr0`. The demo runs NVision with Frigate core version 0.17.0. The container is healthy. Its port 8971 endpoint uses the default self-signed Frigate certificate and rejects an unauthenticated API request; port 5000 accepts the same API request without authentication. Use 8971 for the pilot and later restrict port 5000 to required integration sources. Portainer's screenshot marks the GPU Docker endpoint down, but that does not prove the host itself is down; investigate only if it affects the chosen pilot. NPM status badges likewise do not establish backend application health.
 
@@ -63,7 +64,7 @@ Keep concrete IP allocations, credentials, internal host inventory and raw expor
 
 ### Infrastructure
 
-Proposed VM: `security-lab-01`, Debian stable, 2 vCPU, 2 GiB RAM and 20 GiB disk. This is a PKI starting size, not sizing for the entire roadmap. Check release support and pin the OS image and container versions at deployment time. Use SSH keys, time synchronization, Docker Engine, the Compose plugin and QEMU guest agent.
+VM `security-lab-01` has been created from a checksum-verified official Debian 13 cloud image with 2 vCPU, 2 GiB RAM and 20 GiB disk. It uses an SSH key and starts automatically with Proxmox. This is a PKI starting size, not sizing for the entire roadmap. The static address is recorded outside the public repository. Base installation is paused because the new address can reach its gateway and resolve public DNS, but cannot reach public IPv4 HTTP/HTTPS or ICMP destinations. Correct the gateway/firewall egress policy before installing the guest agent, Docker Engine or Smallstep. Validate time synchronization afterward.
 
 Run only `step-ca` and, if needed, a Portainer agent initially. Connect it to the existing Portainer server as a new environment; verify server/agent version compatibility. Restrict agent access to the management server and SSH to administrator sources. Do not publish Docker's unauthenticated API. Account for Docker's published-port firewall behavior and validate reachability from an unauthorized source.
 
