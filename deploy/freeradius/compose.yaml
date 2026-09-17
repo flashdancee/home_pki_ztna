@@ -1,0 +1,54 @@
+services:
+  freeradius:
+    image: freeradius/freeradius-server:3.2.10@sha256:cc7fd136e7b03e7b332d94297530318e824a4ecfedbce54562cced723e71e812
+    container_name: freeradius
+    restart: unless-stopped
+    user: "101:101"
+    command: ["-l", "stdout"]
+    ports:
+      - "1812:1812/udp"
+      - "1813:1813/udp"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /run:size=8m,mode=0755
+      - /tmp:size=8m,mode=1777
+      - /var/log/freeradius:size=16m,mode=0750,uid=101,gid=101
+    volumes:
+      - /opt/freeradius/config/clients.conf:/etc/freeradius/clients.conf:ro
+      - /opt/freeradius/config/eap:/etc/freeradius/mods-available/eap:ro
+      - /opt/freeradius/certs:/etc/freeradius/certs:ro
+    healthcheck:
+      test: ["CMD", "freeradius", "-XC"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  radius-cert-renewer:
+    image: smallstep/step-ca@sha256:a2b17872915c193259b75a5474c398326f41bd199f0842093e52cf4182bc8270
+    container_name: radius-cert-renewer
+    restart: unless-stopped
+    user: "0:0"
+    depends_on:
+      freeradius:
+        condition: service_healthy
+    pid: service:freeradius
+    cap_drop:
+      - ALL
+    cap_add:
+      - KILL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      disable: true
+    entrypoint: ["/bin/sh", "/renew-radius.sh"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=8m,mode=1777
+    volumes:
+      - /opt/freeradius/certs:/certs
+      - /opt/freeradius/scripts/renew-radius.sh:/renew-radius.sh:ro

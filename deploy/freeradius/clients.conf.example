@@ -1,0 +1,9 @@
+# Copy this file to /opt/freeradius/config/clients.conf on the RADIUS host.
+# Replace the address with the Aruba Virtual Controller/AP source address and
+# replace the secret. Never commit the populated file.
+client aruba_instant {
+	ipaddr = 10.0.0.0/24
+	secret = REPLACE_WITH_A_LONG_RANDOM_SECRET
+	require_message_authenticator = yes
+	nas_type = other
+}

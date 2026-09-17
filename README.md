@@ -6,6 +6,8 @@ Read [PKI Architecture and Enterprise Mapping](docs/PKI_ARCHITECTURE.md) for a c
 
 Status: Phase 1 is operational. A dedicated Smallstep CA issues short-lived certificates to NVision, Firefox trusts the private root, and certificate renewal is automated and tested.
 
+The certificate-authenticated Wi-Fi pilot is staged: FreeRADIUS and its automated CA-issued server certificate are operational, while the Aruba pilot SSID and first client certificate remain to be configured. Deployment files and controller settings are in [`deploy/freeradius`](deploy/freeradius/README.md).
+
 New infrastructure belongs on a dedicated VM, not an existing Docker host. Existing Frigate and proxy deployments receive only the configuration needed for their selected pilot phase.
 
 Keep credentials, CA state, private keys, backups, and raw infrastructure exports out of Git. Use placeholders in published examples. Proposed resume statements are learning targets until their acceptance tests have passed.
