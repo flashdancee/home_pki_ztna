@@ -54,7 +54,10 @@ and is never entered by end users.
 
 Wi-Fi client certificates must be individually issued, include the
 `clientAuth` extended key usage, and have unique device identities. No client
-certificates are issued as part of the server deployment.
+certificates are issued as part of the server deployment. The dedicated
+`wifi-eap` CA provisioner applies the client-only template in
+`deploy/step-ca/templates/wifi-client.tpl`; its pilot default lifetime is 30
+days and its maximum is 90 days.
 
 ## Deployment validation
 
