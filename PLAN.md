@@ -49,6 +49,7 @@ References: [step-ca source/license](https://github.com/smallstep/certificates),
 - [x] Prepare initial documentation for GitHub sync on `main`.
 - [x] Select the demo Frigate instance as the pilot target.
 - [x] Select Firefox on the owner's current PC; owner agrees to guided public-root certificate installation.
+- [x] Create and validate the `nvision.home.arpa` Pi-hole record; Firefox reaches the expected self-signed certificate warning on port 8971.
 - [x] Inspect the selected NVision version, Compose/configuration, authentication and TLS behavior.
 - [ ] Inspect camera, MQTT, storage and other integrations before changing or restarting NVision.
 - [ ] Identify Pi-hole and Nginx Proxy Manager management endpoints and versions.
@@ -70,7 +71,7 @@ Use an offline encrypted root key and an online intermediate key. Keep encrypted
 
 ### DNS and certificate
 
-Proposed internal names: `ca.home.arpa` and `frigate-pki.home.arpa`. Confirm they do not conflict with existing DNS. Add only the required Pi-hole records. The CA name resolves to the new VM; the Frigate name resolves directly to the selected Frigate host for this phase. A private CA does not require purchasing a domain or exposing an ACME challenge to the internet.
+Internal names: `ca.home.arpa` and `nvision.home.arpa`. The NVision record has been created and validated against the expected pre-PKI certificate warning. Add the CA record after reserving the new VM's address. The CA name resolves to the new VM; the NVision name resolves directly to the selected NVision host for this phase. A private CA does not require purchasing a domain or exposing an ACME challenge to the internet.
 
 Issue one certificate with the exact DNS name in its Subject Alternative Name (SAN). Add an IP SAN only if direct-IP HTTPS is an explicit requirement. Generate the leaf private key on the service host where practical and submit a CSR; never distribute the CA signing key. Choose and document a short pilot validity period that fits the renewal schedule. Do not assume step-ca defaults produce a certificate that lasts months.
 
