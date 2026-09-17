@@ -1,0 +1,22 @@
+# Local infrastructure details and runtime material
+local/
+secrets/
+backups/
+data/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.csr
+*.crt
+*.cer
+*.log
+*.tfstate*
+*.qcow2
+*.iso
+.agents/
+.codex/
