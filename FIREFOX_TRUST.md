@@ -1,10 +1,10 @@
 # Trust the lab CA in Firefox
 
-Status: instructions prepared; the CA has not yet been created or imported. The owner selected Firefox on their current PC and requested a guided installation.
+Status: the CA is running; the public root is ready for import. The owner selected Firefox on their current PC and requested a guided installation.
 
 We will do this together after issuing the pilot certificate:
 
-1. Obtain the lab CA's **public root certificate** through the administrator connection. Compare its SHA-256 fingerprint with the fingerprint read directly from the CA's trusted setup records. The exact filename and fingerprint will be supplied at deployment time. Do not import a private key or the Frigate leaf certificate as a root authority.
+1. Use the Git-ignored `local/Home_Lab_Root_CA.crt`. Confirm its SHA-256 fingerprint is `69:28:FD:89:4F:20:5A:A4:3A:F1:09:DE:19:C1:B6:CC:36:8B:75:84:5E:D8:F0:59:87:D7:6C:77:79:3F:97:1F`. Do not import a private key or the NVision leaf certificate as a root authority.
 2. Open Firefox Settings and search for **certificates**, then select **View Certificates**. Depending on the Firefox version, this is under Privacy & Security, possibly within Advanced settings.
 3. Select **Authorities → Import**, and choose the verified root certificate file.
 4. Enable trust for identifying websites when prompted, then confirm.

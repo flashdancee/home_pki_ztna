@@ -68,6 +68,8 @@ VM `security-lab-01` has been created from a checksum-verified official Debian 1
 
 The encrypted P-384 root key was generated outside the CA VM in a permission-restricted, non-repository handoff directory. The intermediate key was generated directly on the CA VM; only its CSR crossed to the root environment for signing. The resulting five-year intermediate chain and private key were verified on the VM. The VM contains the public root certificate, intermediate certificate and encrypted intermediate key, but no root private key or root password. The owner must verify an encrypted offline backup before the temporary handoff copy is deleted.
 
+The owner verified the offline handoff and removed it from the working PC. The online CA is running from the digest-pinned Compose definition in `deploy/step-ca`. Its chain and hostname validate, the health and ACME directory endpoints respond, the container reports healthy, and a restart test passed. A verified public-root copy is available only in the Git-ignored `local/` directory for client enrollment.
+
 Run only `step-ca` and, if needed, a Portainer agent initially. Connect it to the existing Portainer server as a new environment; verify server/agent version compatibility. Restrict agent access to the management server and SSH to administrator sources. Do not publish Docker's unauthenticated API. Account for Docker's published-port firewall behavior and validate reachability from an unauthorized source.
 
 Use an offline encrypted root key and an online intermediate key. Keep encrypted recovery copies outside the VM; a VM snapshot is not an offline root backup. Restrict intermediate-key access and understand that Docker/Portainer administrators with host control can access the online CA. No root key in a running container, Git repository, or routine VM backup.
@@ -88,7 +90,8 @@ Check existing HTTP upstreams before enabling TLS: a proxy still forwarding HTTP
 
 ### Acceptance tests
 
-- [ ] CA health check verifies using its pinned root; issuance works for the intended name.
+- [x] CA health check verifies using its pinned root; ACME discovery works and restart persistence passed.
+- [ ] Issuance works for the intended NVision name.
 - [ ] `openssl s_client` verifies the served chain and hostname using the root certificate.
 - [ ] `curl --cacert` succeeds without `-k`; browser succeeds without bypassing a warning.
 - [ ] The chosen browser works after installing the public root into its applicable trust store.
