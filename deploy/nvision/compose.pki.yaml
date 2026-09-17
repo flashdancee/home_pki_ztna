@@ -1,0 +1,35 @@
+services:
+  frigate:
+    volumes:
+      - /home/appdata/nvision/certs:/etc/letsencrypt/live/frigate:ro
+
+  cert-renewer:
+    container_name: nvision-cert-renewer
+    image: smallstep/step-ca@sha256:a2b17872915c193259b75a5474c398326f41bd199f0842093e52cf4182bc8270
+    restart: unless-stopped
+    user: "0:0"
+    entrypoint:
+      - /usr/local/bin/step
+    command:
+      - ca
+      - renew
+      - --daemon
+      - --renew-period
+      - 8h
+      - --ca-url
+      - https://10.0.0.8:9000
+      - --root
+      - /home/step/root_ca.crt
+      - --exec
+      - sh /home/step/renew-fullchain.sh
+      - /home/step/nvision-home-arpa.crt
+      - /home/step/privkey.pem
+    volumes:
+      - /home/appdata/nvision/certs:/home/step
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

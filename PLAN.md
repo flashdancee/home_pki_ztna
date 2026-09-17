@@ -91,20 +91,20 @@ Check existing HTTP upstreams before enabling TLS: a proxy still forwarding HTTP
 ### Acceptance tests
 
 - [x] CA health check verifies using its pinned root; ACME discovery works and restart persistence passed.
-- [ ] Issuance works for the intended NVision name.
-- [ ] `openssl s_client` verifies the served chain and hostname using the root certificate.
-- [ ] `curl --cacert` succeeds without `-k`; browser succeeds without bypassing a warning.
+- [x] Issuance works for the intended NVision name.
+- [x] `openssl s_client` verifies the served chain and hostname using the root certificate.
+- [ ] `curl --cacert` succeeds without `-k`; browser success awaits the owner's final NVision refresh.
 - [ ] The chosen browser works after installing the public root into its applicable trust store.
-- [ ] A client without the lab root rejects the chain; a wrong hostname fails verification.
-- [ ] Frigate still requires login; live video and existing integrations work.
-- [ ] A second issuance/replacement is observed at the service and survives a restart.
+- [x] A client without the lab root rejects the chain; a wrong hostname fails verification.
+- [ ] NVision still requires login; live video and existing integrations work. Authentication is verified, but the demo camera endpoints are currently unavailable.
+- [x] A forced renewal changed the certificate served by NVision without a container restart; the renewal sidecar is scheduled every eight hours.
 - [ ] Record expiry, fingerprint, SANs and validation evidence with private details removed.
 
 Rollback: preserve the previous Compose/config and certificate directory; restore those and the prior TLS/upstream settings together, then retest the old URL. Remove only pilot DNS/trust entries if retiring the experiment. Do not restore stale CA state casually after further issuance.
 
 ## Phase 2 — Renewal and one reverse-proxy pilot
 
-First automate Frigate renewal with `step` or a compatible ACME client. Use restricted issuance policy, protected credentials, atomic certificate replacement and a tested reload mechanism. Current Frigate documentation describes automatic certificate reloads; verify this on the deployed release. Alert on renewal failure and expiry, and test a restore before expanding use.
+NVision renewal is automated with `step ca renew` using certificate-based authentication; the sidecar receives no provisioner password or CA private key. It atomically rebuilds `fullchain.pem`, and NVision 0.17 automatically reloaded a forced renewal without a container restart. The 24-hour leaf certificate is renewed every eight hours. Alerting, a missed-renewal drill and a restore test remain before expanding use.
 
 Then add one separate internal proxy hostname using a CA-issued custom certificate. Validate the installed NPM custom-certificate workflow and build renewal/import/reload automation appropriate to that release; do not assume its Let's Encrypt UI supports an arbitrary private ACME directory.
 

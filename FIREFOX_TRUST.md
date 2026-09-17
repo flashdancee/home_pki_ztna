@@ -1,6 +1,6 @@
 # Trust the lab CA in Firefox
 
-Status: the CA is running; the public root is ready for import. The owner selected Firefox on their current PC and requested a guided installation.
+Status: complete. Firefox trusts the imported root and opened the CA health endpoint without a warning. NVision browser validation remains after its newly issued certificate is installed.
 
 We will do this together after issuing the pilot certificate:
 
